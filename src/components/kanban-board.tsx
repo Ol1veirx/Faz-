@@ -19,9 +19,10 @@ import { useTasks } from '@/contexts/tasks-context'
 interface KanbanBoardProps {
   onEdit: (task: Task) => void
   onDelete: (task: Task) => void
+  sprintId?: string | null
 }
 
-export function KanbanBoard({ onEdit, onDelete }: KanbanBoardProps) {
+export function KanbanBoard({ onEdit, onDelete, sprintId }: KanbanBoardProps) {
   const { tasks, updateStatus } = useTasks()
   const [activeTask, setActiveTask] = useState<Task | null>(null)
 
@@ -30,20 +31,25 @@ export function KanbanBoard({ onEdit, onDelete }: KanbanBoardProps) {
     useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
   )
 
+  const filteredTasks = useMemo(() => {
+    if (sprintId === null || sprintId === undefined) return tasks
+    return tasks.filter((t) => t.sprint_id === sprintId)
+  }, [tasks, sprintId])
+
   const tasksByStatus = useMemo(() => {
     const grouped: Record<TaskStatus, Task[]> = {
       pendente: [],
       'em andamento': [],
       concluída: [],
     }
-    for (const task of tasks) {
+    for (const task of filteredTasks) {
       const status = task.status as TaskStatus
       if (grouped[status]) {
         grouped[status].push(task)
       }
     }
     return grouped
-  }, [tasks])
+  }, [filteredTasks])
 
   const handleDragStart = (event: DragStartEvent) => {
     const task = event.active.data.current?.task as Task | undefined

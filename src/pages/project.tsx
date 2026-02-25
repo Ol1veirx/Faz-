@@ -3,9 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/auth-context'
 import { useProjects } from '@/contexts/projects-context'
 import { useTasks } from '@/contexts/tasks-context'
+import { useSprints } from '@/contexts/sprints-context'
 import { KanbanBoard } from '@/components/kanban-board'
 import { TaskDialog } from '@/components/task-dialog'
 import { DeleteConfirmDialog } from '@/components/delete-confirm-dialog'
+import { SprintBar } from '@/components/sprint-bar'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, LogOut, Plus, Loader2 } from 'lucide-react'
 import type { Task, TaskStatus } from '@/types/task'
@@ -16,17 +18,32 @@ export default function ProjectPage() {
   const { user, signOut } = useAuth()
   const { projects } = useProjects()
   const { loading, create, update, remove, setProjectId } = useTasks()
+  const { setProjectId: setSprintsProjectId, activeSprint } = useSprints()
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [deleteTask, setDeleteTask] = useState<Task | null>(null)
+  const [selectedSprintId, setSelectedSprintId] = useState<string | null>(null)
 
   const project = projects.find((p) => p.id === id)
 
   useEffect(() => {
-    if (id) setProjectId(id)
-    return () => setProjectId(null)
-  }, [id, setProjectId])
+    if (id) {
+      setProjectId(id)
+      setSprintsProjectId(id)
+    }
+    return () => {
+      setProjectId(null)
+      setSprintsProjectId(null)
+    }
+  }, [id, setProjectId, setSprintsProjectId])
+
+  // Auto-selecionar a sprint ativa quando carrega
+  useEffect(() => {
+    if (activeSprint && selectedSprintId === null) {
+      setSelectedSprintId(activeSprint.id)
+    }
+  }, [activeSprint, selectedSprintId])
 
   const handleCreate = () => {
     setEditingTask(null)
@@ -38,7 +55,7 @@ export default function ProjectPage() {
     setDialogOpen(true)
   }
 
-  const handleSubmit = async (data: { title: string; status: TaskStatus }) => {
+  const handleSubmit = async (data: { title: string; status: TaskStatus; sprint_id: string | null }) => {
     if (editingTask) {
       await update(editingTask.id, data)
     } else {
@@ -87,6 +104,15 @@ export default function ProjectPage() {
       </header>
 
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-6">
+        {/* Sprint Bar */}
+        <div className="mb-4 rounded-lg border bg-card p-3">
+          <SprintBar
+            projectId={id!}
+            selectedSprintId={selectedSprintId}
+            onSelectSprint={setSelectedSprintId}
+          />
+        </div>
+
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-sm font-medium text-muted-foreground">Tarefas</h2>
           <Button size="sm" onClick={handleCreate}>
@@ -100,7 +126,11 @@ export default function ProjectPage() {
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <KanbanBoard onEdit={handleEdit} onDelete={setDeleteTask} />
+          <KanbanBoard
+            onEdit={handleEdit}
+            onDelete={setDeleteTask}
+            sprintId={selectedSprintId}
+          />
         )}
       </main>
 

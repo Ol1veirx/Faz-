@@ -9,6 +9,7 @@ export interface Task {
   status: TaskStatus
   assigned_to: string | null
   user_id: string
+  sprint_id: string | null
   created_at: string
 }
 
@@ -17,12 +18,14 @@ export interface CreateTaskData {
   project_id: string
   status?: TaskStatus
   assigned_to?: string
+  sprint_id?: string | null
 }
 
 export interface UpdateTaskData {
   title?: string
   status?: TaskStatus
   assigned_to?: string | null
+  sprint_id?: string | null
 }
 
 export const STATUS_CONFIG: Record<TaskStatus, { label: string; color: string }> = {

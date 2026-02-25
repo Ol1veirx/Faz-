@@ -19,17 +19,20 @@ import {
 } from '@/components/ui/select'
 import { Loader2 } from 'lucide-react'
 import { TASK_STATUSES, STATUS_CONFIG, type Task, type TaskStatus } from '@/types/task'
+import { useSprints } from '@/contexts/sprints-context'
 
 interface TaskDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (data: { title: string; status: TaskStatus }) => Promise<void>
+  onSubmit: (data: { title: string; status: TaskStatus; sprint_id: string | null }) => Promise<void>
   task?: Task | null
 }
 
 export function TaskDialog({ open, onOpenChange, onSubmit, task }: TaskDialogProps) {
+  const { sprints } = useSprints()
   const [title, setTitle] = useState('')
   const [status, setStatus] = useState<TaskStatus>('pendente')
+  const [sprintId, setSprintId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -39,6 +42,7 @@ export function TaskDialog({ open, onOpenChange, onSubmit, task }: TaskDialogPro
     if (open) {
       setTitle(task?.title ?? '')
       setStatus(task?.status ?? 'pendente')
+      setSprintId(task?.sprint_id ?? null)
       setError('')
     }
   }, [open, task])
@@ -49,7 +53,7 @@ export function TaskDialog({ open, onOpenChange, onSubmit, task }: TaskDialogPro
     setLoading(true)
 
     try {
-      await onSubmit({ title: title.trim(), status })
+      await onSubmit({ title: title.trim(), status, sprint_id: sprintId })
       onOpenChange(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao salvar tarefa')
@@ -82,20 +86,42 @@ export function TaskDialog({ open, onOpenChange, onSubmit, task }: TaskDialogPro
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="task-status">Status</Label>
-            <Select value={status} onValueChange={(v) => setStatus(v as TaskStatus)}>
-              <SelectTrigger id="task-status">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {TASK_STATUSES.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {STATUS_CONFIG[s].label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="task-status">Status</Label>
+              <Select value={status} onValueChange={(v) => setStatus(v as TaskStatus)}>
+                <SelectTrigger id="task-status">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {TASK_STATUSES.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {STATUS_CONFIG[s].label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="task-sprint">Sprint</Label>
+              <Select
+                value={sprintId ?? '__none__'}
+                onValueChange={(v) => setSprintId(v === '__none__' ? null : v)}
+              >
+                <SelectTrigger id="task-sprint">
+                  <SelectValue placeholder="Nenhuma" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">Nenhuma</SelectItem>
+                  {sprints.map((sprint) => (
+                    <SelectItem key={sprint.id} value={sprint.id}>
+                      {sprint.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}

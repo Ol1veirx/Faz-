@@ -50,6 +50,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
       if (error) throw error
       setTasks(data as Task[])
     } catch (err) {
+      console.log("Error:", err instanceof Error ? err.message : 'Erro')
       setError(err instanceof Error ? err.message : 'Erro ao carregar tarefas')
     } finally {
       setLoading(false)
@@ -70,6 +71,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
         project_id: data.project_id,
         status: data.status || 'pendente',
         assigned_to: data.assigned_to || null,
+        sprint_id: data.sprint_id || null,
         user_id: user.id,
       })
       .select()
@@ -85,6 +87,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     if (data.title !== undefined) updatePayload.title = data.title
     if (data.status !== undefined) updatePayload.status = data.status
     if (data.assigned_to !== undefined) updatePayload.assigned_to = data.assigned_to
+    if (data.sprint_id !== undefined) updatePayload.sprint_id = data.sprint_id
 
     const { data: task, error } = await supabase
       .from('tasks')

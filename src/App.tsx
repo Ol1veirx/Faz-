@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from '@/contexts/auth-context'
 import { ProjectsProvider } from '@/contexts/projects-context'
 import { TasksProvider } from '@/contexts/tasks-context'
+import { SprintsProvider } from '@/contexts/sprints-context'
 import { ProtectedRoute } from '@/components/protected-route'
 import LoginPage from '@/pages/login'
 import DashboardPage from '@/pages/dashboard'
@@ -32,6 +33,7 @@ function App() {
       <AuthProvider>
         <ProjectsProvider>
           <TasksProvider>
+            <SprintsProvider>
             <Routes>
               <Route
                 path="/login"
@@ -58,6 +60,7 @@ function App() {
                 }
               />
             </Routes>
+            </SprintsProvider>
           </TasksProvider>
         </ProjectsProvider>
       </AuthProvider>

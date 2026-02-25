@@ -17,6 +17,8 @@ interface TasksContextType {
   create: (data: CreateTaskData) => Promise<Task>
   update: (id: string, data: UpdateTaskData) => Promise<Task>
   updateStatus: (id: string, status: TaskStatus) => Promise<Task>
+  assign: (id: string) => Promise<Task>
+  unassign: (id: string) => Promise<Task>
   remove: (id: string) => Promise<void>
   refetch: () => Promise<void>
   setProjectId: (projectId: string | null) => void
@@ -87,6 +89,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     if (data.title !== undefined) updatePayload.title = data.title
     if (data.status !== undefined) updatePayload.status = data.status
     if (data.assigned_to !== undefined) updatePayload.assigned_to = data.assigned_to
+    if (data.username_task !== undefined) updatePayload.username_task = data.username_task
     if (data.sprint_id !== undefined) updatePayload.sprint_id = data.sprint_id
 
     const { data: task, error } = await supabase
@@ -105,6 +108,16 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     return update(id, { status })
   }
 
+  const assign = async (id: string): Promise<Task> => {
+    if (!user) throw new Error('Usuário não autenticado')
+   console.log(user)
+    return update(id, { assigned_to: user.id, username_task: user.email })
+  }
+
+  const unassign = async (id: string): Promise<Task> => {
+    return update(id, { assigned_to: null })
+  }
+
   const remove = async (id: string): Promise<void> => {
     const { error } = await supabase
       .from('tasks')
@@ -117,7 +130,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
 
   return (
     <TasksContext.Provider
-      value={{ tasks, loading, error, create, update, updateStatus, remove, refetch: fetchTasks, setProjectId }}
+      value={{ tasks, loading, error, create, update, updateStatus, assign, unassign, remove, refetch: fetchTasks, setProjectId }}
     >
       {children}
     </TasksContext.Provider>

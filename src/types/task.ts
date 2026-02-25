@@ -8,6 +8,7 @@ export interface Task {
   title: string
   status: TaskStatus
   assigned_to: string | null
+  username_task:  string | null
   user_id: string
   sprint_id: string | null
   created_at: string
@@ -25,6 +26,7 @@ export interface UpdateTaskData {
   title?: string
   status?: TaskStatus
   assigned_to?: string | null
+  username_task?: string | null
   sprint_id?: string | null
 }
 

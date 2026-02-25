@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
+import TaskLogo from '../assets/task-logo.svg'
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true)
@@ -53,7 +54,8 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold tracking-tight">
+          <CardTitle className="flex items-center justify-center gap-2 text-2xl font-bold tracking-tight">
+            <img src={TaskLogo} className='w-8 h-8'/>
             Fazê
           </CardTitle>
           <CardDescription>

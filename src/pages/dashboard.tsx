@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import { useProjects } from '@/contexts/projects-context'
 import { Button } from '@/components/ui/button'
@@ -14,7 +14,6 @@ import { useTheme } from '@/contexts/theme-context'
 export default function DashboardPage() {
    const { user, signOut } = useAuth()
    const { projects, loading, create, update, remove } = useProjects()
-   const { toggleTheme } = useTheme()
 
    const [dialogOpen, setDialogOpen] = useState(false)
    const [editingProject, setEditingProject] = useState<Project | null>(null)

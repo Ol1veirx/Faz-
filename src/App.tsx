@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from '@/contexts/auth-context'
 import { ProjectsProvider } from '@/contexts/projects-context'
 import { TasksProvider } from '@/contexts/tasks-context'
 import { SprintsProvider } from '@/contexts/sprints-context'
+import { ThemeProvider } from '@/contexts/theme-context'
 import { ProtectedRoute } from '@/components/protected-route'
 import LoginPage from '@/pages/login'
 import DashboardPage from '@/pages/dashboard'
@@ -29,42 +30,44 @@ function AuthRedirect({ children }: { children: React.ReactNode }) {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <ProjectsProvider>
-          <TasksProvider>
-            <SprintsProvider>
-            <Routes>
-              <Route
-                path="/login"
-                element={
-                  <AuthRedirect>
-                    <LoginPage />
-                  </AuthRedirect>
-                }
-              />
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/project/:id"
-                element={
-                  <ProtectedRoute>
-                    <ProjectPage />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-            </SprintsProvider>
-          </TasksProvider>
-        </ProjectsProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <ProjectsProvider>
+            <TasksProvider>
+              <SprintsProvider>
+              <Routes>
+                <Route
+                  path="/login"
+                  element={
+                    <AuthRedirect>
+                      <LoginPage />
+                    </AuthRedirect>
+                  }
+                />
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/project/:id"
+                  element={
+                    <ProtectedRoute>
+                      <ProjectPage />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+              </SprintsProvider>
+            </TasksProvider>
+          </ProjectsProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 

@@ -10,6 +10,7 @@ import { DeleteConfirmDialog } from '@/components/delete-confirm-dialog'
 import { SprintBar } from '@/components/sprint-bar'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, LogOut, Plus, Loader2 } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
 import type { Task, TaskStatus } from '@/types/task'
 
 export default function ProjectPage() {
@@ -98,6 +99,7 @@ export default function ProjectPage() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground">{user?.email}</span>
+            <ThemeToggle />
             <Button variant="ghost" size="icon" onClick={signOut}>
               <LogOut className="h-4 w-4" />
             </Button>

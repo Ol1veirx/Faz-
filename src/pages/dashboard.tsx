@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import { useProjects } from '@/contexts/projects-context'
 import { Button } from '@/components/ui/button'
@@ -6,16 +6,20 @@ import { ProjectCard } from '@/components/project-card'
 import { ProjectDialog } from '@/components/project-dialog'
 import { DeleteConfirmDialog } from '@/components/delete-confirm-dialog'
 import { LogOut, Plus, FolderOpen, Loader2 } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
 import TaskLogo from '../assets/task-logo.svg'
 import type { Project } from '@/types/project'
+import { useTheme } from '@/contexts/theme-context'
 
 export default function DashboardPage() {
    const { user, signOut } = useAuth()
    const { projects, loading, create, update, remove } = useProjects()
+   const { toggleTheme } = useTheme()
 
    const [dialogOpen, setDialogOpen] = useState(false)
    const [editingProject, setEditingProject] = useState<Project | null>(null)
    const [deleteProject, setDeleteProject] = useState<Project | null>(null)
+   const { theme } = useTheme()
 
    const handleCreate = () => {
       setEditingProject(null)
@@ -46,13 +50,14 @@ export default function DashboardPage() {
          <header className="border-b">
             <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
                <div className='flex items-center justify-center gap-2'>
-                  <img src={TaskLogo} className='w-8 h-8' />
+                  <img src={TaskLogo} className={`w-8 h-8 ${theme === 'dark' ? 'brightness-0 invert' : 'brightness-0'}`} />
                   <h1 className="text-lg font-bold tracking-tight">Fazê</h1>
                </div>
                <div className="flex items-center gap-3">
                   <span className="text-sm text-muted-foreground">
                      {user?.email}
                   </span>
+                  <ThemeToggle />
                   <Button variant="ghost" size="icon" onClick={signOut}>
                      <LogOut className="h-4 w-4" />
                   </Button>

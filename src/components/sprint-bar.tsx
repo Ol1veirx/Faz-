@@ -74,7 +74,7 @@ export function SprintBar({ projectId, selectedSprintId, onSelectSprint }: Sprin
           value={selectedSprintId ?? '__all__'}
           onValueChange={(v) => onSelectSprint(v === '__all__' ? null : v)}
         >
-          <SelectTrigger className="h-8 w-48 text-xs">
+          <SelectTrigger className="h-8 w-55 text-xs">
             <SelectValue placeholder="Todas as tarefas" />
           </SelectTrigger>
           <SelectContent>

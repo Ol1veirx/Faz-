@@ -20,17 +20,21 @@ import {
 import { Loader2 } from 'lucide-react'
 import { TASK_STATUSES, STATUS_CONFIG, type Task, type TaskStatus } from '@/types/task'
 import { useSprints } from '@/contexts/sprints-context'
+import { Textarea } from './ui/textarea'
 
 interface TaskDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (data: { title: string; status: TaskStatus; sprint_id: string | null }) => Promise<void>
+  onSubmit: (data: {
+    title: string; status: TaskStatus; sprint_id: string | null, description: string | null
+  }) => Promise<void>
   task?: Task | null
 }
 
 export function TaskDialog({ open, onOpenChange, onSubmit, task }: TaskDialogProps) {
   const { sprints } = useSprints()
   const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
   const [status, setStatus] = useState<TaskStatus>('pendente')
   const [sprintId, setSprintId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -41,6 +45,7 @@ export function TaskDialog({ open, onOpenChange, onSubmit, task }: TaskDialogPro
   useEffect(() => {
     if (open) {
       setTitle(task?.title ?? '')
+      setDescription(task?.description ?? '')
       setStatus(task?.status ?? 'pendente')
       setSprintId(task?.sprint_id ?? null)
       setError('')
@@ -53,7 +58,7 @@ export function TaskDialog({ open, onOpenChange, onSubmit, task }: TaskDialogPro
     setLoading(true)
 
     try {
-      await onSubmit({ title: title.trim(), status, sprint_id: sprintId })
+      await onSubmit({ title: title.trim(), status, sprint_id: sprintId, description: description })
       onOpenChange(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao salvar tarefa')
@@ -82,6 +87,18 @@ export function TaskDialog({ open, onOpenChange, onSubmit, task }: TaskDialogPro
               placeholder="Ex: Criar wireframe da landing page"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="task-description">Descrição</Label>
+            <Textarea
+              id="task-description"
+              className="w-full resize-none break-all min-h-[100px]"
+              placeholder="Ex: O wireframe deve conte as medidas x e y"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               required
             />
           </div>

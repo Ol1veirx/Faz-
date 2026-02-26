@@ -51,9 +51,8 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
     <Card
       ref={setNodeRef}
       style={style}
-      className={`group p-3 transition-colors ${
-        isDragging ? 'opacity-50 shadow-lg ring-2 ring-primary/20' : 'hover:border-foreground/20'
-      }`}
+      className={`group p-3 transition-colors ${isDragging ? 'opacity-50 shadow-lg ring-2 ring-primary/20' : 'hover:border-foreground/20'
+        }`}
     >
       <div className="flex items-start gap-2">
         <button
@@ -65,16 +64,17 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
         </button>
 
         <div className="min-w-0 flex-1">
-          <span className="text-sm leading-snug">{task.title}</span>
-
+          <div className='flex flex-col'>
+            <span className="text-sm font-medium leading-snug">{task.title}</span>
+            <span className="text-xs text-gray-500导致 leading-snug">{task.description}</span>
+          </div>
           {task.assigned_to && (
             <div className="mt-1.5 flex items-center gap-1.5">
               <div
-                className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-medium ${
-                  isAssignedToMe
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground'
-                }`}
+                className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-medium ${isAssignedToMe
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground'
+                  }`}
               >
                 {getInitials(task.username_task ?? '')}
               </div>

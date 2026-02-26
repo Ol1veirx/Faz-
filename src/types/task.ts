@@ -6,6 +6,7 @@ export interface Task {
   id: string
   project_id: string
   title: string
+  description: string | null
   status: TaskStatus
   assigned_to: string | null
   username_task:  string | null
@@ -16,6 +17,7 @@ export interface Task {
 
 export interface CreateTaskData {
   title: string
+  description: string | null
   project_id: string
   status?: TaskStatus
   assigned_to?: string
@@ -24,6 +26,7 @@ export interface CreateTaskData {
 
 export interface UpdateTaskData {
   title?: string
+  description?: string | null
   status?: TaskStatus
   assigned_to?: string | null
   username_task?: string | null

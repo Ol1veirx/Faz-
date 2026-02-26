@@ -55,7 +55,9 @@ export default function ProjectPage() {
     setDialogOpen(true)
   }
 
-  const handleSubmit = async (data: { title: string; status: TaskStatus; sprint_id: string | null }) => {
+  const handleSubmit = async (data: {
+    title: string; status: TaskStatus; sprint_id: string | null, description: string | null
+  }) => {
     if (editingTask) {
       await update(editingTask.id, data)
     } else {

@@ -70,6 +70,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
       .from('tasks')
       .insert({
         title: data.title,
+        description: data.description || null,
         project_id: data.project_id,
         status: data.status || 'pendente',
         assigned_to: data.assigned_to || null,
@@ -87,6 +88,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   const update = async (id: string, data: UpdateTaskData): Promise<Task> => {
     const updatePayload: Record<string, unknown> = {}
     if (data.title !== undefined) updatePayload.title = data.title
+    if (data.description !== undefined) updatePayload.description = data.description
     if (data.status !== undefined) updatePayload.status = data.status
     if (data.assigned_to !== undefined) updatePayload.assigned_to = data.assigned_to
     if (data.username_task !== undefined) updatePayload.username_task = data.username_task

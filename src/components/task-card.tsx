@@ -66,7 +66,7 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
         <div className="min-w-0 flex-1">
           <div className='flex flex-col'>
             <span className="text-sm font-medium leading-snug">{task.title}</span>
-            <span className="text-xs text-gray-500导致 leading-snug">{task.description}</span>
+            <span className="text-xs text-gray-500导致 leading-snug text-justify">{task.description}</span>
           </div>
           {task.assigned_to && (
             <div className="mt-1.5 flex items-center gap-1.5">
